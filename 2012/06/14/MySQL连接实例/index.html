@@ -1,0 +1,582 @@
+
+ <!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>MySQL连接实例 | Tingting Tao&#39;s Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Tingting Tao">
+    
+
+    
+    <meta name="description" content="各种有趣的MySQL连接实例，直接上代码。 关于MySQL join的说明可参考：MySQL的Join使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL连接实例">
+<meta property="og:url" content="http://taylortao.github.io/2012/06/14/MySQL%E8%BF%9E%E6%8E%A5%E5%AE%9E%E4%BE%8B/index.html">
+<meta property="og:site_name" content="Tingting Tao&#39;s Blog">
+<meta property="og:description" content="各种有趣的MySQL连接实例，直接上代码。 关于MySQL join的说明可参考：MySQL的Join使用">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2012-06-15T02:07:00.000Z">
+<meta property="article:modified_time" content="2020-01-18T19:38:02.980Z">
+<meta property="article:author" content="Tingting Tao">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="alternative" href="/atom.xml" title="Tingting Tao&#39;s Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/%02.css">
+<link rel="stylesheet" href="/.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="Tingting Tao&#39;s Blog" title="Tingting Tao&#39;s Blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Tingting Tao&#39;s Blog">Tingting Tao&#39;s Blog</a></h1>
+				<h2 class="blog-motto">Welcome to Tingting&#39;s home</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:taylortao.github.io">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2012/06/14/MySQL连接实例/" title="MySQL连接实例" itemprop="url">MySQL连接实例</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Tingting Tao" target="_blank" itemprop="author">Tingting Tao</a>
+		
+  <p class="article-time">
+    <time datetime="2012-06-15T02:07:00.000Z" itemprop="datePublished"> Published 2012-06-14</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<p>各种有趣的MySQL连接实例，直接上代码。</p>
+<p>关于MySQL join的说明可参考：<a href="/2011/12/13/MySQL的Join使用/">MySQL的Join使用</a></p>
+<a id="more"></a>
+
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; use test  </span><br><span class="line">Database changed  </span><br><span class="line">mysql&gt; show tables;  </span><br><span class="line">Empty <span class="keyword">set</span> (<span class="number">0.00</span> sec)  </span><br><span class="line">  </span><br><span class="line">mysql&gt; <span class="keyword">create</span> <span class="keyword">table</span> person( <span class="keyword">id</span> <span class="built_in">smallint</span> <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT, <span class="keyword">name</span> <span class="built_in">varchar</span>(<span class="number">30</span>), primary <span class="keyword">key</span>(<span class="keyword">id</span>));  </span><br><span class="line">Query OK, 0 rows affected (0.12 sec)  </span><br><span class="line">  </span><br><span class="line">mysql&gt; create table score(id smallint unsigned NOT NULL, score int);  </span><br><span class="line">Query OK, 0 rows affected (0.14 sec)  </span><br><span class="line">  </span><br><span class="line">mysql&gt; show tables;  </span><br><span class="line">+<span class="comment">----------------+  </span></span><br><span class="line">| Tables_in_test |  </span><br><span class="line">+<span class="comment">----------------+  </span></span><br><span class="line">| person         |  </span><br><span class="line">| score          |  </span><br><span class="line">+<span class="comment">----------------+  </span></span><br><span class="line">2 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)  </span><br><span class="line">  </span><br><span class="line">mysql&gt; <span class="keyword">insert</span> <span class="keyword">into</span> person(<span class="keyword">name</span>) <span class="keyword">values</span> (<span class="string">'zrx'</span>),(<span class="string">'genius'</span>),(<span class="string">'stupid'</span>);  </span><br><span class="line">Query OK, 3 rows affected (0.11 sec)  </span><br><span class="line">Records: 3  Duplicates: 0  Warnings: 0  </span><br><span class="line">  </span><br><span class="line">mysql&gt; select * from person;  </span><br><span class="line">+<span class="comment">----+--------+  </span></span><br><span class="line">| id | name   |  </span><br><span class="line">+<span class="comment">----+--------+  </span></span><br><span class="line">|  1 | zrx    |  </span><br><span class="line">|  2 | genius |  </span><br><span class="line">|  3 | stupid |  </span><br><span class="line">+<span class="comment">----+--------+  </span></span><br><span class="line">3 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)  </span><br><span class="line">  </span><br><span class="line">mysql&gt; <span class="keyword">insert</span> <span class="keyword">into</span> score <span class="keyword">values</span> (<span class="number">1</span>, <span class="number">9</span>),(<span class="number">2</span>, <span class="number">100</span>);  </span><br><span class="line">Query OK, 2 rows affected (0.11 sec)  </span><br><span class="line">Records: 2  Duplicates: 0  Warnings: 0  </span><br><span class="line">  </span><br><span class="line">mysql&gt; insert into score values (4,20);  </span><br><span class="line">Query OK, 1 row affected (0.11 sec)  </span><br><span class="line"></span><br><span class="line">mysql&gt; insert into score values (1,1);  </span><br><span class="line">Query OK, 1 row affected (0.11 sec)  </span><br><span class="line">  </span><br><span class="line">mysql&gt; select * from score;  </span><br><span class="line">+<span class="comment">----+-------+  </span></span><br><span class="line">| id | score |  </span><br><span class="line">+<span class="comment">----+-------+  </span></span><br><span class="line">|  1 |     9 |  </span><br><span class="line">|  2 |   100 |  </span><br><span class="line">|  4 |    20 |  </span><br><span class="line">|  1 |     1 |  </span><br><span class="line">+<span class="comment">----+-------+  </span></span><br><span class="line">4 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)  </span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> person <span class="keyword">inner</span> <span class="keyword">join</span> score ;  </span><br><span class="line">+<span class="comment">----+--------+----+-------+  </span></span><br><span class="line">| id | name   | id | score |  </span><br><span class="line">+<span class="comment">----+--------+----+-------+  </span></span><br><span class="line">|  1 | zrx    |  1 |     9 |  </span><br><span class="line">|  2 | genius |  1 |     9 |  </span><br><span class="line">|  3 | stupid |  1 |     9 |  </span><br><span class="line">|  1 | zrx    |  2 |   100 |  </span><br><span class="line">|  2 | genius |  2 |   100 |  </span><br><span class="line">|  3 | stupid |  2 |   100 |  </span><br><span class="line">|  1 | zrx    |  4 |    20 |  </span><br><span class="line">|  2 | genius |  4 |    20 |  </span><br><span class="line">|  3 | stupid |  4 |    20 |  </span><br><span class="line">|  1 | zrx    |  1 |     1 |  </span><br><span class="line">|  2 | genius |  1 |     1 |  </span><br><span class="line">|  3 | stupid |  1 |     1 |  </span><br><span class="line">+<span class="comment">----+--------+----+-------+  </span></span><br><span class="line">12 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)  </span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> person <span class="keyword">inner</span> <span class="keyword">join</span> score <span class="keyword">where</span> person.id=score.id;  </span><br><span class="line">+<span class="comment">----+--------+----+-------+  </span></span><br><span class="line">| id | name   | id | score |  </span><br><span class="line">+<span class="comment">----+--------+----+-------+  </span></span><br><span class="line">|  1 | zrx    |  1 |     9 |  </span><br><span class="line">|  2 | genius |  2 |   100 |  </span><br><span class="line">|  1 | zrx    |  1 |     1 |  </span><br><span class="line">+<span class="comment">----+--------+----+-------+  </span></span><br><span class="line">3 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)  </span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> (person, score);  </span><br><span class="line">+<span class="comment">----+--------+----+-------+  </span></span><br><span class="line">| id | name   | id | score |  </span><br><span class="line">+<span class="comment">----+--------+----+-------+  </span></span><br><span class="line">|  1 | zrx    |  1 |     9 |  </span><br><span class="line">|  2 | genius |  1 |     9 |  </span><br><span class="line">|  3 | stupid |  1 |     9 |  </span><br><span class="line">|  1 | zrx    |  2 |   100 |  </span><br><span class="line">|  2 | genius |  2 |   100 |  </span><br><span class="line">|  3 | stupid |  2 |   100 |  </span><br><span class="line">|  1 | zrx    |  4 |    20 |  </span><br><span class="line">|  2 | genius |  4 |    20 |  </span><br><span class="line">|  3 | stupid |  4 |    20 |  </span><br><span class="line">|  1 | zrx    |  1 |     1 |  </span><br><span class="line">|  2 | genius |  1 |     1 |  </span><br><span class="line">|  3 | stupid |  1 |     1 |  </span><br><span class="line">+<span class="comment">----+--------+----+-------+  </span></span><br><span class="line">12 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)  </span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> (person, score) <span class="keyword">using</span> (<span class="keyword">id</span>);  </span><br><span class="line">ERROR 1064 (42000): You have an error in your SQL syntax; <span class="keyword">check</span> the <span class="keyword">manual</span> that  </span><br><span class="line">corresponds <span class="keyword">to</span> your MySQL <span class="keyword">server</span> <span class="keyword">version</span> <span class="keyword">for</span> the <span class="keyword">right</span> syntax <span class="keyword">to</span> <span class="keyword">use</span> near <span class="string">'using  </span></span><br><span class="line"><span class="string"> (id)'</span> <span class="keyword">at</span> line <span class="number">1</span>  </span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> (person, score) <span class="keyword">where</span> person.id=score.id;  </span><br><span class="line">+<span class="comment">----+--------+----+-------+  </span></span><br><span class="line">| id | name   | id | score |  </span><br><span class="line">+<span class="comment">----+--------+----+-------+  </span></span><br><span class="line">|  1 | zrx    |  1 |     9 |  </span><br><span class="line">|  2 | genius |  2 |   100 |  </span><br><span class="line">|  1 | zrx    |  1 |     1 |  </span><br><span class="line">+<span class="comment">----+--------+----+-------+  </span></span><br><span class="line">3 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)  </span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> person <span class="keyword">inner</span> <span class="keyword">join</span> score <span class="keyword">using</span> (<span class="keyword">id</span>);  </span><br><span class="line">+<span class="comment">----+--------+-------+  </span></span><br><span class="line">| id | name   | score |  </span><br><span class="line">+<span class="comment">----+--------+-------+  </span></span><br><span class="line">|  1 | zrx    |     9 |  </span><br><span class="line">|  2 | genius |   100 |  </span><br><span class="line">|  1 | zrx    |     1 |  </span><br><span class="line">+<span class="comment">----+--------+-------+  </span></span><br><span class="line">3 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)  </span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> person <span class="keyword">natural</span> <span class="keyword">join</span> score;  </span><br><span class="line">+<span class="comment">----+--------+-------+  </span></span><br><span class="line">| id | name   | score |  </span><br><span class="line">+<span class="comment">----+--------+-------+  </span></span><br><span class="line">|  1 | zrx    |     9 |  </span><br><span class="line">|  2 | genius |   100 |  </span><br><span class="line">|  1 | zrx    |     1 |  </span><br><span class="line">+<span class="comment">----+--------+-------+  </span></span><br><span class="line">3 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)  </span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> person <span class="keyword">left</span> <span class="keyword">join</span> score;  </span><br><span class="line">ERROR 1064 (42000): You have an error in your SQL syntax; <span class="keyword">check</span> the <span class="keyword">manual</span> that  </span><br><span class="line">corresponds <span class="keyword">to</span> your MySQL <span class="keyword">server</span> <span class="keyword">version</span> <span class="keyword">for</span> the <span class="keyword">right</span> syntax <span class="keyword">to</span> <span class="keyword">use</span> near <span class="string">''</span> <span class="keyword">at</span>  </span><br><span class="line">line <span class="number">1</span>  </span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> person <span class="keyword">left</span> <span class="keyword">join</span> score <span class="keyword">where</span> person.id=score.id;  </span><br><span class="line">ERROR 1064 (42000): You have an error in your SQL syntax; <span class="keyword">check</span> the <span class="keyword">manual</span> that  </span><br><span class="line">corresponds <span class="keyword">to</span> your MySQL <span class="keyword">server</span> <span class="keyword">version</span> <span class="keyword">for</span> the <span class="keyword">right</span> syntax <span class="keyword">to</span> <span class="keyword">use</span> near <span class="string">'where  </span></span><br><span class="line"><span class="string"> person.id=score.id'</span> <span class="keyword">at</span> line <span class="number">1</span>  </span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> person <span class="keyword">left</span> <span class="keyword">join</span> score <span class="keyword">using</span>(<span class="keyword">id</span>);  </span><br><span class="line">+<span class="comment">----+--------+-------+  </span></span><br><span class="line">| id | name   | score |  </span><br><span class="line">+<span class="comment">----+--------+-------+  </span></span><br><span class="line">|  1 | zrx    |     9 |  </span><br><span class="line">|  1 | zrx    |     1 |  </span><br><span class="line">|  2 | genius |   100 |  </span><br><span class="line">|  3 | stupid |  NULL |  </span><br><span class="line">+<span class="comment">----+--------+-------+  </span></span><br><span class="line">4 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)  </span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> person <span class="keyword">left</span> <span class="keyword">join</span> score <span class="keyword">on</span> person.id=score.id;  </span><br><span class="line">+<span class="comment">----+--------+------+-------+  </span></span><br><span class="line">| id | name   | id   | score |  </span><br><span class="line">+<span class="comment">----+--------+------+-------+  </span></span><br><span class="line">|  1 | zrx    |    1 |     9 |  </span><br><span class="line">|  1 | zrx    |    1 |     1 |  </span><br><span class="line">|  2 | genius |    2 |   100 |  </span><br><span class="line">|  3 | stupid | NULL |  NULL |  </span><br><span class="line">+<span class="comment">----+--------+------+-------+  </span></span><br><span class="line">4 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)  </span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> person <span class="keyword">right</span> <span class="keyword">join</span> score <span class="keyword">on</span> person.id=score.id;  </span><br><span class="line">+<span class="comment">------+--------+----+-------+  </span></span><br><span class="line">| id   | name   | id | score |  </span><br><span class="line">+<span class="comment">------+--------+----+-------+  </span></span><br><span class="line">|    1 | zrx    |  1 |     9 |  </span><br><span class="line">|    2 | genius |  2 |   100 |  </span><br><span class="line">| NULL | NULL   |  4 |    20 |  </span><br><span class="line">|    1 | zrx    |  1 |     1 |  </span><br><span class="line">+<span class="comment">------+--------+----+-------+  </span></span><br><span class="line">4 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)  </span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> person <span class="keyword">full</span> <span class="keyword">outer</span> <span class="keyword">join</span> score <span class="keyword">on</span> person.id=score.id;  </span><br><span class="line">ERROR 1064 (42000): You have an error in your SQL syntax; <span class="keyword">check</span> the <span class="keyword">manual</span> that  </span><br><span class="line">corresponds <span class="keyword">to</span> your MySQL <span class="keyword">server</span> <span class="keyword">version</span> <span class="keyword">for</span> the <span class="keyword">right</span> syntax <span class="keyword">to</span> <span class="keyword">use</span> near <span class="string">'outer  </span></span><br><span class="line"><span class="string"> join score on person.id=score.id'</span> <span class="keyword">at</span> line <span class="number">1</span>  </span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> person <span class="keyword">full</span> <span class="keyword">join</span> score <span class="keyword">on</span> person.id=score.id;  </span><br><span class="line">ERROR 1054 (42S22): Unknown column 'person.id' in 'on clause'</span><br><span class="line">  </span><br><span class="line">mysql&gt; select * from person full join score using(id);  </span><br><span class="line">+<span class="comment">----+--------+-------+  </span></span><br><span class="line">| id | name   | score |  </span><br><span class="line">+<span class="comment">----+--------+-------+  </span></span><br><span class="line">|  1 | zrx    |     9 |  </span><br><span class="line">|  2 | genius |   100 |  </span><br><span class="line">|  1 | zrx    |     1 |  </span><br><span class="line">+<span class="comment">----+--------+-------+  </span></span><br><span class="line">3 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)  </span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> person <span class="keyword">full</span> <span class="keyword">join</span> score <span class="keyword">on</span> person.id=score.id;  </span><br><span class="line">ERROR 1054 (42S22): Unknown column 'person.id' in 'on clause'  </span><br><span class="line"></span><br><span class="line">mysql&gt; select * from person p full join score s on p.id=s.id;  </span><br><span class="line">ERROR 1064 (42000): You have an error in your SQL syntax; <span class="keyword">check</span> the <span class="keyword">manual</span> that  </span><br><span class="line">corresponds <span class="keyword">to</span> your MySQL <span class="keyword">server</span> <span class="keyword">version</span> <span class="keyword">for</span> the <span class="keyword">right</span> syntax <span class="keyword">to</span> <span class="keyword">use</span> near <span class="string">'full  </span></span><br><span class="line"><span class="string">join score s on p.id=s.id'</span> <span class="keyword">at</span> line <span class="number">1</span>  </span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> person <span class="keyword">full</span> <span class="keyword">outer</span> <span class="keyword">join</span> score <span class="keyword">using</span>(<span class="keyword">id</span>);  </span><br><span class="line">ERROR 1064 (42000): You have an error in your SQL syntax; <span class="keyword">check</span> the <span class="keyword">manual</span> that  </span><br><span class="line">corresponds <span class="keyword">to</span> your MySQL <span class="keyword">server</span> <span class="keyword">version</span> <span class="keyword">for</span> the <span class="keyword">right</span> syntax <span class="keyword">to</span> <span class="keyword">use</span> near <span class="string">'outer  </span></span><br><span class="line"><span class="string"> join score using(id)'</span> <span class="keyword">at</span> line <span class="number">1</span>  </span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> person <span class="keyword">left</span> <span class="keyword">join</span> score <span class="keyword">using</span>(<span class="keyword">id</span>) <span class="keyword">union</span> <span class="keyword">select</span> * <span class="keyword">from</span> person  </span><br><span class="line"> <span class="keyword">right</span> <span class="keyword">join</span> score <span class="keyword">using</span> (<span class="keyword">id</span>);  </span><br><span class="line">+<span class="comment">----+--------+--------+  </span></span><br><span class="line">| id | name   | score  |  </span><br><span class="line">+<span class="comment">----+--------+--------+  </span></span><br><span class="line">|  1 | zrx    | 9      |  </span><br><span class="line">|  1 | zrx    | 1      |  </span><br><span class="line">|  2 | genius | 100    |  </span><br><span class="line">|  3 | stupid | NULL   |  </span><br><span class="line">|  1 | 9      | zrx    |  </span><br><span class="line">|  2 | 100    | genius |  </span><br><span class="line">|  4 | 20     | NULL   |  </span><br><span class="line">|  1 | 1      | zrx    |  </span><br><span class="line">+<span class="comment">----+--------+--------+  </span></span><br><span class="line">8 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)  </span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> person <span class="keyword">left</span> <span class="keyword">join</span> score <span class="keyword">on</span> person.id=score.id <span class="keyword">union</span> <span class="keyword">select</span> *  </span><br><span class="line"> <span class="keyword">from</span> person <span class="keyword">right</span> <span class="keyword">join</span> score <span class="keyword">on</span> person.id=score.id;  </span><br><span class="line">+<span class="comment">------+--------+------+-------+  </span></span><br><span class="line">| id   | name   | id   | score |  </span><br><span class="line">+<span class="comment">------+--------+------+-------+  </span></span><br><span class="line">|    1 | zrx    |    1 |     9 |  </span><br><span class="line">|    1 | zrx    |    1 |     1 |  </span><br><span class="line">|    2 | genius |    2 |   100 |  </span><br><span class="line">|    3 | stupid | NULL |  NULL |  </span><br><span class="line">| NULL | NULL   |    4 |    20 |  </span><br><span class="line">+<span class="comment">------+--------+------+-------+  </span></span><br><span class="line">5 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
+
+<p>MySQL本身不支持full join（全连接），但可以通过union来实现。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/IT-Technology/">IT Technology</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/MySQL/">MySQL</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://taylortao.github.io/2012/06/14/MySQL%E8%BF%9E%E6%8E%A5%E5%AE%9E%E4%BE%8B/" data-title="MySQL连接实例 | Tingting Tao&#39;s Blog" data-tsina="1749097660" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2013/04/20/Set up your personal blog with hexo and github/" title="Set up your personal blog with hexo and github">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Set up your personal blog with hexo and github</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2012/06/14/各种二分查找/"  title="各种二分查找">
+ <strong>下一篇：</strong><br/> 
+ <span>各种二分查找
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="github-card">
+<p class="asidetitle">Github Card</p>
+<div class="github-card" data-github="taylortao" data-theme="medium"></div>
+<script type="text/javascript" src="//cdn.jsdelivr.net/github-cards/latest/widget.js" ></script>
+</div>
+
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/IT-Technology/" title="IT Technology">IT Technology<sup>31</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Algorithm/" title="Algorithm">Algorithm<sup>11</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/MySQL/" title="MySQL">MySQL<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Measurement/" title="Measurement">Measurement<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C/" title="C">C<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Database/" title="Database">Database<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/GIT/" title="GIT">GIT<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Adobe-Illustrator/" title="Adobe Illustrator">Adobe Illustrator<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/AB-Testing/" title="AB Testing">AB Testing<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Performance/" title="Performance">Performance<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Java/" title="Java">Java<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Chinese-encoding/" title="Chinese encoding">Chinese encoding<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/PHP/" title="PHP">PHP<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Spider/" title="Spider">Spider<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Blog/" title="Blog">Blog<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Scala/" title="Scala">Scala<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Play/" title="Play">Play<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Sampling/" title="Sampling">Sampling<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Regex/" title="Regex">Regex<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/WireShark/" title="WireShark">WireShark<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Network/" title="Network">Network<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://blog.csdn.net/taylor_tao" target="_blank" title="My old blog">My old blog</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">Weibo</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=1749097660&verifier=d3dc959c&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Hello, I&#39;m Tingting Tao. <br/>
+			Welcome to my blog, my home!</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		<a href="http://weibo.com/bjtaotailang" target="_blank" class="icon-weibo" title="微博"></a>
+		
+		
+		<a href="https://github.com/taylortao" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		<a href="https://www.facebook.com/tao.tingting" target="_blank" class="icon-facebook" title="facebook"></a>
+		
+		
+		
+		
+		
+		
+		<a href="mailto:taylortao.tingting@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2020 
+		
+		<a href="/about" target="_blank" title="Tingting Tao">Tingting Tao</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?9445883255b78103ce0bf0413d5903d5";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
