@@ -4,24 +4,24 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>科普-数据存储知识扫盲 | Tingting Tao&#39;s Blog</title>
+    <title>System design questions template | Tingting Tao&#39;s Blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Tingting Tao">
     
 
     
-    <meta name="description" content="Cache和Buffer之间的区别* Buffer，缓冲 *。主要是为了提高内存和硬盘（或者其他I&#x2F;O设备）之间的数据交换速度设计的。主要目的是为了是数据的写入速度更快。Buffer的设计主要是为了更高效的写入磁盘数据。把分散的写入操作先存在缓冲区内，而后集中进行，这样可以减少磁盘碎片和硬盘的反复寻道时间，提高系统的性能，同时保护硬盘。在Linux系统中，有一个守护进程定期清空缓冲内容，也就是写入">
+    <meta name="description" content="This article is about the process of defining archiecture, components, modules, interfaces and data for a system to satisfy specified requirement.Also the whole processes could be shorten as SNAKE. Cl">
 <meta property="og:type" content="article">
-<meta property="og:title" content="科普-数据存储知识扫盲">
-<meta property="og:url" content="http://taylortao.github.io/2012/02/21/%E7%A7%91%E6%99%AE-%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E7%9F%A5%E8%AF%86%E6%89%AB%E7%9B%B2/index.html">
+<meta property="og:title" content="System design questions template">
+<meta property="og:url" content="http://taylortao.github.io/2020/01/18/System-design-questions-template/index.html">
 <meta property="og:site_name" content="Tingting Tao&#39;s Blog">
-<meta property="og:description" content="Cache和Buffer之间的区别* Buffer，缓冲 *。主要是为了提高内存和硬盘（或者其他I&#x2F;O设备）之间的数据交换速度设计的。主要目的是为了是数据的写入速度更快。Buffer的设计主要是为了更高效的写入磁盘数据。把分散的写入操作先存在缓冲区内，而后集中进行，这样可以减少磁盘碎片和硬盘的反复寻道时间，提高系统的性能，同时保护硬盘。在Linux系统中，有一个守护进程定期清空缓冲内容，也就是写入">
+<meta property="og:description" content="This article is about the process of defining archiecture, components, modules, interfaces and data for a system to satisfy specified requirement.Also the whole processes could be shorten as SNAKE. Cl">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2012-02-21T19:06:00.000Z">
-<meta property="article:modified_time" content="2020-01-18T19:38:03.004Z">
+<meta property="article:published_time" content="2020-01-19T04:08:00.000Z">
+<meta property="article:modified_time" content="2020-01-19T04:48:15.832Z">
 <meta property="article:author" content="Tingting Tao">
-<meta property="article:tag" content="Data storage">
+<meta property="article:tag" content="System design">
 <meta name="twitter:card" content="summary">
 
     
@@ -86,14 +86,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2012/02/21/科普-数据存储知识扫盲/" title="科普-数据存储知识扫盲" itemprop="url">科普-数据存储知识扫盲</a>
+      <a href="/2020/01/18/System-design-questions-template/" title="System design questions template" itemprop="url">System design questions template</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="Tingting Tao" target="_blank" itemprop="author">Tingting Tao</a>
 		
   <p class="article-time">
-    <time datetime="2012-02-21T19:06:00.000Z" itemprop="datePublished"> Published 2012-02-21</time>
+    <time datetime="2020-01-19T04:08:00.000Z" itemprop="datePublished"> Published 2020-01-18</time>
     
   </p>
 </header>
@@ -102,24 +102,64 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Cache和Buffer之间的区别"><span class="toc-number">1.</span> <span class="toc-text">Cache和Buffer之间的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#几种硬盘接口类型"><span class="toc-number">2.</span> <span class="toc-text">几种硬盘接口类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#引申：串口与并口的区别："><span class="toc-number">2.1.</span> <span class="toc-text">引申：串口与并口的区别：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#引申：主板的南桥和北桥"><span class="toc-number">2.2.</span> <span class="toc-text">引申：主板的南桥和北桥</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RAID"><span class="toc-number">3.</span> <span class="toc-text">RAID</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Clarify-the-problem-Scenario"><span class="toc-number">1.</span> <span class="toc-text">Clarify the problem (Scenario)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Constraints-or-scale-Necessary"><span class="toc-number">2.</span> <span class="toc-text">Constraints or scale (Necessary)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Abstract-design-Application"><span class="toc-number">3.</span> <span class="toc-text">Abstract design (Application)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Data-Kilobit"><span class="toc-number">4.</span> <span class="toc-text">Data (Kilobit)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Trade-offs-Evolve"><span class="toc-number">5.</span> <span class="toc-text">Trade offs (Evolve)</span></a></li></ol>
 		
 		</div>
 		
-		<h3 id="Cache和Buffer之间的区别"><a href="#Cache和Buffer之间的区别" class="headerlink" title="Cache和Buffer之间的区别"></a>Cache和Buffer之间的区别</h3><p><strong>* Buffer，缓冲 *</strong>。主要是为了提高内存和硬盘（或者其他I/O设备）之间的数据交换速度设计的。主要目的是为了是数据的写入速度更快。Buffer的设计主要是为了更高效的写入磁盘数据。把分散的写入操作先存在缓冲区内，而后集中进行，这样可以减少磁盘碎片和硬盘的反复寻道时间，提高系统的性能，同时保护硬盘。在Linux系统中，有一个守护进程定期清空缓冲内容，也就是写入磁盘。也可以通过sync命令手动清空缓冲区。同时，卸载磁盘设备时会清空缓冲，所以有时候卸载设备时候要等上一小会。</p>
-<p><strong>* Cache，缓存 *</strong>。主要是为了提高CPU和内存之间的数据交换速度设计的。主要是为了数据的读取速度更快。为了进一步提高速度，设计了一级缓存，二级缓存，三级缓存。由于内存的读取速度远远跟不上CPU的处理速度，同时根据程序运行的局部性原理，CPU执行的指令和访问的数据往往集中在内存的某一块，如果把这部分内容放入Cache中，就能提高CPU的访问速度。</p>
+		<p>This article is about the process of defining archiecture, components, modules, interfaces and data for a system to satisfy specified requirement.<br>Also the whole processes could be shorten as SNAKE.</p>
+<h3 id="Clarify-the-problem-Scenario"><a href="#Clarify-the-problem-Scenario" class="headerlink" title="Clarify the problem (Scenario)"></a>Clarify the problem (Scenario)</h3><p>Clarify the problem or in another word, scenarios and use cases (include corner cases).<br>Below is an example for a video streaming service:</p>
+<ul>
+<li>Register/log in, play video, or video recommendation</li>
+<li>Prioritize all the scenarios and deep dive into it.</li>
+<li>Play video<ul>
+<li>(1) Generate channel</li>
+<li>(2) Get all videos in the channel </li>
+<li>(3) Play videos in the channel</li>
+</ul>
+</li>
+</ul>
+<p>Later in micro design section, we could discuss concrete interface: input / output.</p>
 <a id="more"></a>
 
-<h3 id="几种硬盘接口类型"><a href="#几种硬盘接口类型" class="headerlink" title="几种硬盘接口类型"></a>几种硬盘接口类型</h3><p>硬盘驱动器——HDD，Hard Disk Drive</p>
-<p>IDE（Integrated Drive Electronics）电子集成驱动器<br>存储性能低，价格低廉应用范围广，现已经逐渐被淘汰。IDE是俗称的并口。</p>
-<p>SATA（Serial Advanced Technology Attachment）串行高级技术附件，一种串行硬件驱动器接口<br>存储性能中，高容量低成本，现在比较流行，SATA是俗称的串口。SATA接口需要主板南桥芯片的支持。</p>
-<p>SCSI（Small Computer System Interface）小型计算机系统接口<br>并不是专门为硬盘设计的接口，是为了小型机上的数据传输设计的。</p>
-<p>SAS（Serial Attached SCSI）串行连接SCSI<br>存储性能高，是基于新一代SCSI技术，传输速度高，性能高效，并且兼容SATA硬盘。串口。</p>
-<p>SSD（Solid State Disk）固态硬盘<br>目前流行的固态硬盘。存储性能很高。用固态电子存储芯片阵列制成的硬盘，由控制单元和存储单元（DRAM或FLASH芯片）两部分组成。</p>
-<p>引申：Fusion IO<br>Fusion IO是一种基于PCIe接口的固态存储卡。<br>普通SSD磁盘的IO路径：cpu缓存→内存→Raid or SAS控制器→磁盘上的SATA or SAS芯片→Flash控制芯片→flash cell<br>FusionIO的路径：cpu缓存→PCIe→卡上的flash控制芯片→flash cell （它的Driver使数据绕过了内存层），这也是为什么它只推PCIe接口卡形式产品，而不出SAS、SATA接口的产品<br>另外，raid控制器 or SAS控制器也是一个处理瓶颈，首先其处理能力是一个问题，其次它是一个单通道的，而Fushion IO使用的PCIe总线，虽然它PCIe是一个串行协议，但有X4 X8 X16等等，可以达到多个通道并行。<br>FusionIO的宣传思路就是尽量缩短IO路径，使IO wait尽可能的小，CPU的利用率会大大提高。至于它的最终落地的Flash芯片其实和普通SSD硬盘的flash芯片是一样的东西。<br>（来源URL： <a href="http://www.saview.net/archives/20）" target="_blank" rel="noopener">http://www.saview.net/archives/20）</a></p>
-<h4 id="引申：串口与并口的区别："><a href="#引申：串口与并口的区别：" class="headerlink" title="引申：串口与并口的区别："></a>引申：串口与并口的区别：</h4><p>形象的说，串口就是一条线路之间传送，而并口是8个线路同一时刻传送8个位（一个字节的数据）。但是并不是并口快，由于8位通道之间的互相干扰。传输时速度就受到了限制。而且当传输出错时，要同时重新传8个位的数据。串口没有干扰，传输出错后重发一位就可以了。所以要比并口快。串口硬盘就是这样被人们重视的。</p>
-<h4 id="引申：主板的南桥和北桥"><a href="#引申：主板的南桥和北桥" class="headerlink" title="引申：主板的南桥和北桥"></a>引申：主板的南桥和北桥</h4><p>北桥、南桥是主板上芯片组的总线控制器。北桥连接系统总线，担负着CPU访问内存，显卡，控制PCI总线。南桥主要负责IO设备的控制。<br>然而，现在的芯片组已经过渡到单芯片，主板上只有一个主板芯片，功能相当于以前的南桥。北桥的功能集成到CPU。</p>
-<h3 id="RAID"><a href="#RAID" class="headerlink" title="RAID"></a>RAID</h3><p>独立冗余磁盘阵列（Redundant Array of Independent Disk，RAID）是一种把多块独立的硬盘（物理硬盘）按不同的方式组合起来形成一个硬盘组（逻辑硬盘），从而提供比单个硬盘更高的存储性能与数据备份能力的技术。RAID特色是N块硬盘同时读取速度加快及提供容错性（Fault Tolerant）。冗余磁盘阵列技术诞生于1987年，由美国加州大学伯克利分校提出。根据磁盘陈列的不同组合方式，可以将RAID分为不同级别。级别并不代表技术高低，选择哪一种RAID level的产品纯视用户的操作环境(operating environment)及应用而定，与级别高低没有必然关系。比如：RAID 0：无差错控制的带区组；RAID 1：镜像结构；RAID 2：带海明码校验；RAID 3：带奇偶校验码的并行传送；RAID 4：带奇偶校验码的独立磁盘结构；RAID 5：分布式奇偶校验的独立磁盘结构等等。</p>
+<h3 id="Constraints-or-scale-Necessary"><a href="#Constraints-or-scale-Necessary" class="headerlink" title="Constraints or scale (Necessary)"></a>Constraints or scale (Necessary)</h3><p>This part is more about constraints and asssumptions.<br>For example:</p>
+<ul>
+<li>Number of users, like daily active user(DAU)</li>
+<li>Frequency of user actions, like:<ul>
+<li>Concurrent user TPS</li>
+<li>Concurrent user count = DAU / seconds in a day x average online time</li>
+<li>Peak concurrent user TPS</li>
+<li>Future TPS, could be peak TPS x 3 (estimation)</li>
+</ul>
+</li>
+<li>Read/write ratio, read heavy application / write heavy application</li>
+<li>How large the data set is<ul>
+<li>Memory: if per client, we need 10K memory, then the total memory would be peak TPS x 10K</li>
+<li>Disk usage.</li>
+</ul>
+</li>
+<li>Network traffic<ul>
+<li>bandwidth: if per client we need 3mbps(Mbit/s), then peak network traffic would be peak TPS x 3mbps</li>
+</ul>
+</li>
+</ul>
+<h3 id="Abstract-design-Application"><a href="#Abstract-design-Application" class="headerlink" title="Abstract design (Application)"></a>Abstract design (Application)</h3><p>This part is the main components or core components<br>How the services talk with each other, what algorithm need to apply.<br>Also which part of data is the source of truth(authority), and which part of data is derived data.<br>we should be able to draw diagrams of components of your designed system and its connections and justify your design with use cases, constraints and corner cases.</p>
+<p>Typical component design</p>
+<ul>
+<li>Web gateway(load balancer)</li>
+<li>Application service layer</li>
+<li>Data cache</li>
+<li>Data storage</li>
+<li>Message queue, notification center</li>
+<li>Logs, storage, analytics </li>
+<li>Search</li>
+</ul>
+<h3 id="Data-Kilobit"><a href="#Data-Kilobit" class="headerlink" title="Data (Kilobit)"></a>Data (Kilobit)</h3><p>Two parts:<br>Data cache (reddis, memcached, cache key, LRU etc)<br>Data storage (DB, files, single db, master slave, sharding, partition, replication)</p>
+<h3 id="Trade-offs-Evolve"><a href="#Trade-offs-Evolve" class="headerlink" title="Trade offs (Evolve)"></a>Trade offs (Evolve)</h3><p>Evaluate the whole design in terms of performance, reliability (robustness), scalability</p>
+<ul>
+<li>Bottlenecks: most likely database, cache + master-slave + sharding</li>
+<li>Monolithic: modular -&gt; multiple processors + RPC -&gt; service oriented </li>
+<li>Performance tuning: cache, asynchronous process (message queue)</li>
+</ul>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -133,7 +173,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Data-storage/">Data storage</a>
+  <span></span> <a href="/tags/System-design/">System design</a>
   </div>
 
 </div>
@@ -142,7 +182,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://taylortao.github.io/2012/02/21/%E7%A7%91%E6%99%AE-%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E7%9F%A5%E8%AF%86%E6%89%AB%E7%9B%B2/" data-title="科普-数据存储知识扫盲 | Tingting Tao&#39;s Blog" data-tsina="1749097660" class="share clearfix">
+	  <div data-url="http://taylortao.github.io/2020/01/18/System-design-questions-template/" data-title="System design questions template | Tingting Tao&#39;s Blog" data-tsina="1749097660" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -155,19 +195,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2012/02/29/Java输入汉字的编码问题/" title="Java输入汉字的编码问题">
-  <strong>上一篇：</strong><br/>
-  <span>
-  Java输入汉字的编码问题</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2011/12/26/Adobe Illustrator制作书签/"  title="Adobe Illustrator制作书签">
+<a href="/2017/05/03/Binary search/"  title="Binary search">
  <strong>下一篇：</strong><br/> 
- <span>Adobe Illustrator制作书签
+ <span>Binary search
 </span>
 </a>
 </div>
@@ -184,7 +216,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
  
- <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Cache和Buffer之间的区别"><span class="toc-number">1.</span> <span class="toc-text">Cache和Buffer之间的区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#几种硬盘接口类型"><span class="toc-number">2.</span> <span class="toc-text">几种硬盘接口类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#引申：串口与并口的区别："><span class="toc-number">2.1.</span> <span class="toc-text">引申：串口与并口的区别：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#引申：主板的南桥和北桥"><span class="toc-number">2.2.</span> <span class="toc-text">引申：主板的南桥和北桥</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RAID"><span class="toc-number">3.</span> <span class="toc-text">RAID</span></a></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Clarify-the-problem-Scenario"><span class="toc-number">1.</span> <span class="toc-text">Clarify the problem (Scenario)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Constraints-or-scale-Necessary"><span class="toc-number">2.</span> <span class="toc-text">Constraints or scale (Necessary)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Abstract-design-Application"><span class="toc-number">3.</span> <span class="toc-text">Abstract design (Application)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Data-Kilobit"><span class="toc-number">4.</span> <span class="toc-text">Data (Kilobit)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Trade-offs-Evolve"><span class="toc-number">5.</span> <span class="toc-text">Trade offs (Evolve)</span></a></li></ol>
  
   </div>
 
