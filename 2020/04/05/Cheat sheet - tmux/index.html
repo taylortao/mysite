@@ -4,24 +4,24 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>双向扫描 2 way traverse | Tingting Tao&#39;s Blog</title>
+    <title>Cheatsheet - tmux | Tingting Tao&#39;s Blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Tingting Tao">
     
 
     
-    <meta name="description" content="当求一个数列的尖峰值，或者跟尖峰值相关的问题时，常常需要用到双向扫描的做法。 例如 LeetCode 105 Candy There are N children standing in a line. Each child is assigned a rating value.You are giving candies to these children subjected to the fo">
+    <meta name="description" content="Pane spilt horizontally: Ctrl-b % split vertically: Ctrl-b &quot; navigate between panes: Ctrl-b &lt;arrow key&gt; close: Ctrl-d make a pane go full screen: Ctrl-b z  shrink it back to its previous si">
 <meta property="og:type" content="article">
-<meta property="og:title" content="双向扫描 2 way traverse">
-<meta property="og:url" content="http://taylortao.github.io/2013/11/14/%E5%8F%8C%E5%90%91%E6%89%AB%E6%8F%8F/index.html">
+<meta property="og:title" content="Cheatsheet - tmux">
+<meta property="og:url" content="http://taylortao.github.io/2020/04/05/Cheat%20sheet%20-%20tmux/index.html">
 <meta property="og:site_name" content="Tingting Tao&#39;s Blog">
-<meta property="og:description" content="当求一个数列的尖峰值，或者跟尖峰值相关的问题时，常常需要用到双向扫描的做法。 例如 LeetCode 105 Candy There are N children standing in a line. Each child is assigned a rating value.You are giving candies to these children subjected to the fo">
+<meta property="og:description" content="Pane spilt horizontally: Ctrl-b % split vertically: Ctrl-b &quot; navigate between panes: Ctrl-b &lt;arrow key&gt; close: Ctrl-d make a pane go full screen: Ctrl-b z  shrink it back to its previous si">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2013-11-14T16:18:00.000Z">
-<meta property="article:modified_time" content="2020-01-18T19:38:02.969Z">
+<meta property="article:published_time" content="2020-04-05T18:37:25.000Z">
+<meta property="article:modified_time" content="2020-04-05T20:12:51.408Z">
 <meta property="article:author" content="Tingting Tao">
-<meta property="article:tag" content="Algorithm">
+<meta property="article:tag" content="Cheatsheet">
 <meta name="twitter:card" content="summary">
 
     
@@ -86,26 +86,64 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2013/11/14/双向扫描/" title="双向扫描 2 way traverse" itemprop="url">双向扫描 2 way traverse</a>
+      <a href="/2020/04/05/Cheat sheet - tmux/" title="Cheatsheet - tmux" itemprop="url">Cheatsheet - tmux</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="Tingting Tao" target="_blank" itemprop="author">Tingting Tao</a>
 		
   <p class="article-time">
-    <time datetime="2013-11-14T16:18:00.000Z" itemprop="datePublished"> Published 2013-11-14</time>
+    <time datetime="2020-04-05T18:37:25.000Z" itemprop="datePublished"> Published 2020-04-05</time>
     
   </p>
 </header>
 	<div class="article-content">
 		
-		<p>当求一个数列的尖峰值，或者跟尖峰值相关的问题时，常常需要用到双向扫描的做法。</p>
-<p>例如 LeetCode 105 Candy</p>
-<p>There are N children standing in a line. Each child is assigned a rating value.<br>You are giving candies to these children subjected to the following requirements:<br>(1) Each child must have at least one candy.<br>(2) Children with a higher rating get more candies than their neighbors.<br>What is the minimum candies you must give?</p>
-<p>解法： 首先正向扫描，算出需要满足只看左边所需要的最少糖果的分配方案。<br>再反向扫描，算出满足只看右边所需要的最少糖果的分配方案。<br>然后分别对每一项求出两者之间的较大值。<br>可以优化为：反向扫描的时候，如果不满足高分小孩拿到比右边小孩更多糖果这个条件，再对值进行修正。</p>
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Pane"><span class="toc-number">1.</span> <span class="toc-text">Pane</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Window"><span class="toc-number">2.</span> <span class="toc-text">Window</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Session"><span class="toc-number">3.</span> <span class="toc-text">Session</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Common"><span class="toc-number">4.</span> <span class="toc-text">Common</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Search"><span class="toc-number">4.1.</span> <span class="toc-text">Search</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Copy-Paste"><span class="toc-number">4.2.</span> <span class="toc-text">Copy-Paste</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<h3 id="Pane"><a href="#Pane" class="headerlink" title="Pane"></a>Pane</h3><ul>
+<li>spilt horizontally: <code>Ctrl-b %</code></li>
+<li>split vertically: <code>Ctrl-b &quot;</code></li>
+<li>navigate between panes: <code>Ctrl-b &lt;arrow key&gt;</code></li>
+<li>close: <code>Ctrl-d</code></li>
+<li>make a pane go full screen: <code>Ctrl-b z</code> </li>
+<li>shrink it back to its previous size: <code>Ctrl-b z</code>  again</li>
+<li>resize pane in direction:  <code>Ctrl-b esc-&lt;arrow key&gt;</code></li>
+</ul>
+<h3 id="Window"><a href="#Window" class="headerlink" title="Window"></a>Window</h3><ul>
+<li>create new window: <code>Ctrl-b c</code></li>
+<li>navigate:  <code>Ctrl-b p</code> / <code>Ctrl-b n</code> / <code>Ctrl-b &lt;number&gt;</code></li>
+<li>close: <code>Ctrl-d</code></li>
+<li>rename: <code>Ctrl-b ,</code></li>
+</ul>
 <a id="more"></a>
 
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> candy = <span class="function"><span class="keyword">function</span>(<span class="params">ratings</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (!ratings || ratings.length === <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">var</span> number = [<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">1</span>; i&lt;ratings.length; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (ratings[i] &gt; ratings[i<span class="number">-1</span>])</span><br><span class="line">		&#123;</span><br><span class="line">			number[i] = number[i<span class="number">-1</span>] + <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			number[i] = <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">var</span> i=ratings.length<span class="number">-2</span>; i&gt;=<span class="number">0</span>; i--)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (ratings[i] &gt; ratings[i+<span class="number">1</span>] &amp;&amp; number[i] &lt;= number[i+<span class="number">1</span>])</span><br><span class="line">		&#123;</span><br><span class="line">			number[i] = number[i+<span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">var</span> sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">0</span>; i&lt;ratings.length; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		sum += number[i];</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">return</span> sum;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>  
+<h3 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h3><ul>
+<li>list: <code>tmux ls</code></li>
+<li>new session with name: <code>tmux new -s &lt;session_name&gt;</code></li>
+<li>rename session: <code>tmux rename-session -t &lt;old_name&gt; &lt;new_name&gt;</code></li>
+<li>detach: <code>Ctrl-b d</code> or <code>Ctrl-b D</code> (to have tmux give you a choice which of your sessions you want to detach)</li>
+<li>attach: <code>tmux attach -t &lt;name&gt;</code></li>
+</ul>
+<h3 id="Common"><a href="#Common" class="headerlink" title="Common"></a>Common</h3><ul>
+<li>help: <code>Ctrl-b ?</code></li>
+</ul>
+<h4 id="Search"><a href="#Search" class="headerlink" title="Search"></a>Search</h4><ul>
+<li>enter copy mode: <code>Ctrl-b [</code></li>
+<li>press <code>Ctrl-s</code> and then type keyword</li>
+</ul>
+<h4 id="Copy-Paste"><a href="#Copy-Paste" class="headerlink" title="Copy-Paste"></a>Copy-Paste</h4><ul>
+<li>enter copy mode: <code>Ctrl-b [</code></li>
+<li>press <code>Ctrl-space</code> to start select</li>
+<li>copy: <code>Ctrl-w</code> </li>
+<li>paste: <code>Ctrl-b ]</code></li>
+</ul>
+  
 	</div>
 		<footer class="article-footer clearfix">
 <div class="article-catetags">
@@ -118,7 +156,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Algorithm/">Algorithm</a>
+  <span></span> <a href="/tags/Cheatsheet/">Cheatsheet</a>
   </div>
 
 </div>
@@ -127,7 +165,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://taylortao.github.io/2013/11/14/%E5%8F%8C%E5%90%91%E6%89%AB%E6%8F%8F/" data-title="双向扫描 2 way traverse | Tingting Tao&#39;s Blog" data-tsina="1749097660" class="share clearfix">
+	  <div data-url="http://taylortao.github.io/2020/04/05/Cheat%20sheet%20-%20tmux/" data-title="Cheatsheet - tmux | Tingting Tao&#39;s Blog" data-tsina="1749097660" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -140,19 +178,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2013/12/14/最长回文子串/" title="最长回文子串">
-  <strong>上一篇：</strong><br/>
-  <span>
-  最长回文子串</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2013/11/10/取样Sampling/"  title="取样Sampling">
+<a href="/2020/04/05/When join a new team/"  title="When join a new team">
  <strong>下一篇：</strong><br/> 
- <span>取样Sampling
+ <span>When join a new team
 </span>
 </a>
 </div>
@@ -165,6 +195,13 @@
 
 </div>  
       <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Pane"><span class="toc-number">1.</span> <span class="toc-text">Pane</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Window"><span class="toc-number">2.</span> <span class="toc-text">Window</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Session"><span class="toc-number">3.</span> <span class="toc-text">Session</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Common"><span class="toc-number">4.</span> <span class="toc-text">Common</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Search"><span class="toc-number">4.1.</span> <span class="toc-text">Search</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Copy-Paste"><span class="toc-number">4.2.</span> <span class="toc-text">Copy-Paste</span></a></li></ol></li></ol>
+ 
+  </div>
 
 <div id="asidepart">
 <div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
@@ -396,6 +433,8 @@ $(document).ready(function(){
       m.removeClass('moveMain');
       a.css('display', 'block').removeClass('fadeOut');
       o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
         
     }
   });
